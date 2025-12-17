@@ -1,0 +1,13 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      {/* Градиент от фиолетового к синему, как в хедере */}
+      <stop offset="0%" stop-color="#9333ea"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  {/* Закругленный квадрат */}
+  <rect width="32" height="32" rx="8" fill="url(#grad)"/>
+  {/* Текст SF по центру */}
+  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="15" fill="white">SF</text>
+</svg>
