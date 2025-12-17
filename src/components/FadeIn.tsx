@@ -30,7 +30,7 @@ export const FadeIn = ({
     <motion.div
       initial={{ opacity: 0, ...getInitialPosition() }} // Распаковываем координаты
       whileInView={{ opacity: 1, y: 0, x: 0 }}
-      viewport={{ once: true, margin: "-50px" }} // margin чуть меньше, чтобы срабатывало раньше
+      viewport={{ once: true }} // margin чуть меньше, чтобы срабатывало раньше
       transition={{ 
         duration: 0.6, 
         delay: delay, 
