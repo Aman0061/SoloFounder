@@ -204,7 +204,7 @@ const LandingPage: React.FC = () => {
           <motion.div 
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariant}
             className="text-center max-w-2xl mx-auto mb-16"
           >

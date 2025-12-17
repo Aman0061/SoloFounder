@@ -81,7 +81,7 @@ const ContactForm = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
-            className="bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 shadow-[0_0_40px_rgba(147,51,234,0.1)] relative"
+            className="bg-neutral-900/90 backdrop-blur-sm border border-white/10 rounded-3xl p-8 md:p-10 shadow-[0_0_40px_rgba(147,51,234,0.1)] relative"
           >
             <div className="absolute inset-x-0 h-px top-0 bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
 
