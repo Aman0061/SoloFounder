@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import {
   CheckCircle,
   Play,
@@ -10,27 +10,27 @@ import {
 } from 'lucide-react';
 import { motion, type Variants } from 'framer-motion';
 
-// Импорт компонентов
+// --- КРИТИЧЕСКИЕ КОМПОНЕНТЫ (Грузим сразу) ---
 import LeadModal from '../components/LeadModal';
 import Header from '../components/Header';
-import CurriculumAccordion from '../components/CurriculumAccordion';
-import MentorSection from '../components/MentorSection';
-import FAQ from '../components/FAQ';
-import Comparison from '../components/Comparison';
-import ContactForm from '../components/ContactForm';
 
-// --- 1. НОВЫЕ Минималистичные контурные иконки брендов (SVG) ---
-// Все иконки приведены к единому стилю: толщина линий 1.5-2, без заливки.
+// --- ЛЕНИВЫЕ КОМПОНЕНТЫ (Грузим только когда нужны) ---
+// Это ускоряет первую загрузку страницы на мобильных
+const CurriculumAccordion = lazy(() => import('../components/CurriculumAccordion'));
+const MentorSection = lazy(() => import('../components/MentorSection'));
+const FAQ = lazy(() => import('../components/FAQ'));
+const Comparison = lazy(() => import('../components/Comparison'));
+const ContactForm = lazy(() => import('../components/ContactForm'));
+
+// --- 1. Минималистичные иконки брендов (SVG) ---
 const MinimalTechIcons = {
   Cursor: (props: any) => (
-    // Имитация терминала/курсора ввода >_
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <polyline points="4 17 10 11 4 5"></polyline>
       <line x1="12" y1="19" x2="20" y2="19"></line>
     </svg>
   ),
   SQL: (props: any) => (
-    // Классическая "бочка" базы данных, контур
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <ellipse cx="12" cy="5" rx="9" ry="3" />
       <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
@@ -38,26 +38,22 @@ const MinimalTechIcons = {
     </svg>
   ),
   Gemini: (props: any) => (
-    // Контурная звезда/искра
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M12 3L14.5 8.5L20 11L14.5 13.5L12 19L9.5 13.5L4 11L9.5 8.5L12 3Z" />
     </svg>
   ),
   Vercel: (props: any) => (
-    // Контурный треугольник вместо залитого
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <path d="M12 3L22 21H2L12 3Z" />
     </svg>
   ),
   Telegram: (props: any) => (
-    // Контурный самолетик
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <line x1="22" y1="2" x2="11" y2="13" />
       <polygon points="22 2 15 22 11 13 2 9 22 2" />
     </svg>
   ),
   Figma: (props: any) => (
-    // Упрощенный контурный логотип Figma
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
       <circle cx="12" cy="12" r="3"></circle>
       <path d="M12 5a3 3 0 1 0-3 3h3V5z"></path>
@@ -99,8 +95,9 @@ const LandingPage: React.FC = () => {
 
       {/* --- HERO SECTION --- */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-purple-900/10 blur-[120px] rounded-full pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/2 bg-lime-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+        {/* OPTIMIZATION: hidden md:block - скрываем тяжелый блюр на мобилках */}
+        <div className="hidden md:block absolute top-0 right-0 w-1/2 h-full bg-purple-900/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div className="hidden md:block absolute bottom-0 left-0 w-1/3 h-1/2 bg-lime-500/5 blur-[120px] rounded-full pointer-events-none"></div>
 
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div 
@@ -169,8 +166,8 @@ const LandingPage: React.FC = () => {
                       <TrendingUp size={20} className="text-white" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-400">Текущий прогресс</div>
-                      <div className="font-bold">"Настройка базы данных"</div>
+                      <div className="text-sm text-gray-400">Current Module</div>
+                      <div className="font-bold">Data Visualization</div>
                     </div>
                   </div>
                 </div>
@@ -185,7 +182,7 @@ const LandingPage: React.FC = () => {
                     ></motion.div>
                   </div>
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Прогресс</span>
+                    <span>Progress</span>
                     <span>75%</span>
                   </div>
                 </div>
@@ -196,7 +193,10 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* --- COMPARISON (OLD vs NEW) --- */}
-      <Comparison />
+      {/* LAZY LOAD: Оборачиваем в Suspense */}
+      <Suspense fallback={<div className="h-96 w-full bg-neutral-900/50 animate-pulse rounded-3xl my-20"></div>}>
+        <Comparison />
+      </Suspense>
 
       {/* --- SKILLS SECTION --- */}
       <section id="about" className="py-20 bg-neutral-900 border-y border-neutral-800">
@@ -204,6 +204,7 @@ const LandingPage: React.FC = () => {
           <motion.div 
             initial="hidden"
             whileInView="visible"
+            // OPTIMIZATION: amount вместо margin для Safari
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariant}
             className="text-center max-w-2xl mx-auto mb-16"
@@ -212,10 +213,8 @@ const LandingPage: React.FC = () => {
             <p className="text-gray-400">Никакой сухой теории. Только боевой AI-стек.</p>
           </motion.div>
 
-          {/* ИСПОЛЬЗУЕМ НОВЫЕ МИНИМАЛИСТИЧНЫЕ ИКОНКИ */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
             {[
-              // Используем hoverColor для цвета при наведении
               { name: 'Cursor AI', Icon: MinimalTechIcons.Cursor, hoverColor: 'group-hover:text-white' },
               { name: 'SQL', Icon: MinimalTechIcons.SQL, hoverColor: 'group-hover:text-blue-400' },
               { name: 'Gemini 3 Pro', Icon: MinimalTechIcons.Gemini, hoverColor: 'group-hover:text-indigo-400' },
@@ -227,12 +226,10 @@ const LandingPage: React.FC = () => {
                 key={idx}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.2 }}
                 transition={{ delay: idx * 0.05 }}
-                // По умолчанию иконки нейтрально-серые (text-neutral-500)
                 className="bg-neutral-950 border border-neutral-800/50 p-6 rounded-2xl flex flex-col items-center justify-center hover:border-neutral-700 hover:bg-neutral-900/50 transition-all group text-neutral-500 cursor-default"
               >
-                {/* Применяем hoverColor здесь */}
                 <div className={`mb-4 transform group-hover:scale-110 transition-transform duration-300 ${skill.hoverColor}`}>
                   <skill.Icon className="w-8 h-8 md:w-9 md:h-9" strokeWidth={1.5} />
                 </div>
@@ -252,17 +249,17 @@ const LandingPage: React.FC = () => {
             <motion.div 
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.2 }}
               variants={fadeInVariant}
               className="lg:col-span-4 space-y-8"
             >
-              <h2 className="text-4xl font-bold">Программа <br /><span className="text-purple-400">Обучения</span></h2>
+              <h2 className="text-4xl font-bold">Course <br /><span className="text-purple-400">Program</span></h2>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { val: '2', label: 'Недели' },
-                  { val: '1', label: 'Реальный Проект', color: 'text-lime-400' },
-                  { val: '28', label: 'Часов практики' },
-                  { val: '+100%', label: 'К продуктивности' },
+                  { val: '8', label: 'Months' },
+                  { val: '4', label: 'Projects', color: 'text-lime-400' },
+                  { val: '105h', label: 'Theory' },
+                  { val: '350h', label: 'Practice' },
                 ].map((stat, i) => (
                   <div key={i} className="bg-neutral-950 p-4 rounded-xl border border-neutral-800">
                     <div className={`text-3xl font-bold ${stat.color || 'text-white'} mb-1`}>{stat.val}</div>
@@ -272,21 +269,20 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="lg:col-span-8"
-            >
-              <CurriculumAccordion />
-            </motion.div>
+            <div className="lg:col-span-8">
+              {/* LAZY LOAD: Аккордеон грузится только при скролле */}
+              <Suspense fallback={<div className="h-64 bg-neutral-900 animate-pulse rounded-xl border border-neutral-800"></div>}>
+                <CurriculumAccordion />
+              </Suspense>
+            </div>
           </div>
         </div>
       </section>
 
       {/* --- MENTOR SECTION --- */}
-      <MentorSection />
+      <Suspense fallback={<div className="py-20"></div>}>
+        <MentorSection />
+      </Suspense>
 
       {/* --- RATES SECTION --- */}
       <section id="rates" className="py-20 bg-neutral-900 border-t border-neutral-800">
@@ -294,7 +290,7 @@ const LandingPage: React.FC = () => {
           <motion.div 
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariant}
             className="text-center mb-16"
           >
@@ -307,7 +303,7 @@ const LandingPage: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.2 }}
               className="bg-neutral-950 p-8 rounded-3xl border border-neutral-800 flex flex-col hover:border-gray-600 transition-colors"
             >
               <div className="mb-8">
@@ -334,7 +330,7 @@ const LandingPage: React.FC = () => {
             <motion.div 
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: 0.2 }}
               className="bg-neutral-950 p-8 rounded-3xl border-2 border-purple-600 relative flex flex-col transform md:-translate-y-4 shadow-[0_0_30px_rgba(147,51,234,0.15)]"
             >
@@ -365,8 +361,10 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* --- FAQ & CONTACT --- */}
-      <FAQ />
-      <ContactForm />
+      <Suspense fallback={null}>
+        <FAQ />
+        <ContactForm />
+      </Suspense>
 
       {/* --- FOOTER --- */}
       <footer id="contacts" className="bg-black py-12 border-t border-neutral-900">
