@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Twitter, Linkedin, Github, ExternalLink, Instagram } from 'lucide-react';
+import {Linkedin, ExternalLink, Instagram } from 'lucide-react';
 
 
 const MentorSection = () => {
