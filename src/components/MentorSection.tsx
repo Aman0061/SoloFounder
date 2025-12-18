@@ -22,7 +22,7 @@ const MentorSection = () => {
             <div className="aspect-square rounded-3xl overflow-hidden border border-neutral-800 relative group">
               {/* Замени src на реальное фото */}
               <img 
-                src="../../public/images/me1.jpg"
+                src="/images/me1.jpg"
                 alt="Mentor" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
