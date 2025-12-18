@@ -29,7 +29,7 @@ const MentorSection = () => {
               
               {/* Плашка с опытом */}
               <div className="absolute bottom-6 left-6 bg-neutral-950/90 backdrop-blur border border-neutral-800 p-4 rounded-xl shadow-2xl">
-                <div className="text-3xl font-bold text-white mb-1">3+</div>
+                <div className="text-3xl font-bold text-white mb-1">2</div>
                 <div className="text-xs text-gray-500 uppercase tracking-widest">Года в Финтехе </div>
               </div>
             </div>
