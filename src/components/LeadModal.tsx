@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, User, Phone, Send, ArrowRight, ShieldCheck } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 type LeadModalProps = {
   isOpen: boolean;
@@ -19,6 +20,8 @@ const LeadModal: React.FC<LeadModalProps> = ({
   selectedPlan = 'Mentorship Plan',
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [formData, setFormData] = useState<FormData>({
     name: '',
     phone: '',
@@ -44,6 +47,71 @@ const LeadModal: React.FC<LeadModalProps> = ({
     return () => window.removeEventListener('keydown', handleEsc);
   }, [onClose]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Простая валидация
+    if (!formData.name || !formData.contact) {
+      toast.error('Пожалуйста, заполните имя и контакт');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const BOT_TOKEN = '8463441294:AAG5jqXX186h2oUkoj0YFTEJDIIButEt1j4';
+    const CHAT_ID = '5221925241';
+
+    const text = `
+      🚀 <b>Новая бронь места!</b>
+
+      📌 <b>Тариф/Кнопка:</b> ${selectedPlan}
+
+      👤 <b>Имя:</b> ${formData.name}
+      📱 <b>Телефон:</b> ${formData.phone}
+      <b>Контакт:</b> ${formData.contact}
+    `;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: text,
+          parse_mode: 'HTML',
+        }),
+      });
+
+      if (response.ok) {
+        toast.success('Заявка принята! Скоро напишу.', {
+          icon: '🚀',
+          style: {
+            background: '#333',
+            color: '#fff',
+            border: '1px solid #a3e635' // lime-400
+          },
+        });
+        
+        // Очищаем и закрываем
+        setFormData({ name: '', phone: '', contact: '' });
+        setTimeout(() => {
+            onClose();
+        }, 1000); // Закрываем модалку через секунду после успеха
+      } else {
+        throw new Error('Telegram Error');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Ошибка. Напишите мне в Telegram лично.', {
+         style: { background: '#333', color: '#fff' }
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (!isOpen && !isAnimating) return null;
 
   return (
@@ -66,9 +134,9 @@ const LeadModal: React.FC<LeadModalProps> = ({
 
         <div className="flex justify-between items-start p-6 pb-2">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">Secure Your Spot</h2>
+            <h2 className="text-2xl font-bold text-white mb-1">Забронируй место</h2>
             <p className="text-sm text-gray-400">
-              You selected: <span className="text-purple-400 font-bold">{selectedPlan}</span>
+              На первый <span className="text-purple-400 font-bold">тестовый поток</span>
             </p>
           </div>
           <button
@@ -81,10 +149,11 @@ const LeadModal: React.FC<LeadModalProps> = ({
 
         <div className="h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent my-2"></div>
 
-        <div className="p-6 space-y-5">
+        {/* Оборачиваем в форму для обработки Submit */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-5">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-wider">
-              Full Name
+              Имя
             </label>
             <div className="relative group">
               <User
@@ -93,7 +162,8 @@ const LeadModal: React.FC<LeadModalProps> = ({
               />
               <input
                 type="text"
-                placeholder="Your Name"
+                required
+                placeholder="Твое имя"
                 className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-12 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -103,7 +173,7 @@ const LeadModal: React.FC<LeadModalProps> = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-wider">
-              Phone Number
+              Телефон (не обязательно)
             </label>
             <div className="relative group">
               <Phone
@@ -112,7 +182,7 @@ const LeadModal: React.FC<LeadModalProps> = ({
               />
               <input
                 type="tel"
-                placeholder="+1 (555) 000-0000"
+                placeholder="+996 (700) 000-000"
                 className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-12 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -122,7 +192,7 @@ const LeadModal: React.FC<LeadModalProps> = ({
 
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-gray-500 ml-1 uppercase tracking-wider">
-              Telegram or Email
+              Telegram или Email
             </label>
             <div className="relative group">
               <Send
@@ -131,26 +201,37 @@ const LeadModal: React.FC<LeadModalProps> = ({
               />
               <input
                 type="text"
-                placeholder="@username or email@domain.com"
+                required
+                placeholder="@username или email"
                 className="w-full bg-neutral-800 border border-neutral-700 rounded-xl px-12 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-all"
                 value={formData.contact}
                 onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
               />
             </div>
           </div>
-        </div>
 
-        <div className="p-6 pt-2">
-          <button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-900/30 transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 group">
-            Confirm & Join
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          <div className="pt-2">
+            <button 
+              type="submit"
+              disabled={isSubmitting}
+              className={`w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-900/30 transform active:scale-[0.98] transition-all flex items-center justify-center gap-2 group ${isSubmitting ? 'opacity-70 cursor-wait' : ''}`}
+            >
+              {isSubmitting ? (
+                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              ) : (
+                <>
+                  Забронировать
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
 
-          <div className="flex items-center justify-center gap-2 mt-4 text-xs text-gray-500">
-            <ShieldCheck size={14} className="text-lime-400" />
-            <span>We will contact you within 15 minutes.</span>
+            <div className="flex items-center justify-center gap-2 mt-4 text-xs text-gray-500">
+              <ShieldCheck size={14} className="text-lime-400" />
+              <span>Я свяжусь с тобой в течении 15 минут</span>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

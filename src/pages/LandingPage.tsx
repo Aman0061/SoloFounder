@@ -60,6 +60,28 @@ const MinimalTechIcons = {
       <path d="M12 5a3 3 0 1 1 3 3h-3V5z"></path>
       <path d="M9 12a3 3 0 1 0 3 3V12H9z"></path>
     </svg>
+  ),
+  // 1. Анализ рынка (График с лупой или тренд)
+  Analytics: (props: any) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M3 3v18h18" />
+      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+    </svg>
+  ),
+  // 2. Таргет (Мишень)
+  Target: (props: any) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </svg>
+  ),
+  // 3. Бизнес планирование (Чек-лист/Планшет)
+  Plan: (props: any) => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M9 11l3 3L22 4" />
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+    </svg>
   )
 };
 
@@ -166,8 +188,8 @@ const LandingPage: React.FC = () => {
                       <TrendingUp size={20} className="text-white" />
                     </div>
                     <div>
-                      <div className="text-sm text-gray-400">Current Module</div>
-                      <div className="font-bold">Data Visualization</div>
+                      <div className="text-sm text-gray-400">Текущий модуль:</div>
+                      <div className="font-bold">Анализ рынка</div>
                     </div>
                   </div>
                 </div>
@@ -182,7 +204,7 @@ const LandingPage: React.FC = () => {
                     ></motion.div>
                   </div>
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>Progress</span>
+                    <span>Прогресс</span>
                     <span>75%</span>
                   </div>
                 </div>
@@ -198,29 +220,36 @@ const LandingPage: React.FC = () => {
         <Comparison />
       </Suspense>
 
-      {/* --- SKILLS SECTION --- */}
+          {/* --- SKILLS SECTION --- */}
       <section id="about" className="py-20 bg-neutral-900 border-y border-neutral-800">
         <div className="container mx-auto px-6">
           <motion.div 
             initial="hidden"
             whileInView="visible"
-            // OPTIMIZATION: amount вместо margin для Safari
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeInVariant}
             className="text-center max-w-2xl mx-auto mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Навыки, которые ты освоишь</h2>
-            <p className="text-gray-400">Никакой сухой теории. Только боевой AI-стек.</p>
+            <p className="text-gray-400">Никакой сухой теории. Только боевой стек Founder-a.</p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {/* ИЗМЕНЕНИЕ: lg:grid-cols-3 для сетки 3x3 (всего 9 навыков) */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {[
+              // Технический стек (Инструменты)
               { name: 'Cursor AI', Icon: MinimalTechIcons.Cursor, hoverColor: 'group-hover:text-white' },
-              { name: 'SQL', Icon: MinimalTechIcons.SQL, hoverColor: 'group-hover:text-blue-400' },
               { name: 'Gemini 3 Pro', Icon: MinimalTechIcons.Gemini, hoverColor: 'group-hover:text-indigo-400' },
-              { name: 'Vercel', Icon: MinimalTechIcons.Vercel, hoverColor: 'group-hover:text-white' },
+              { name: 'Vercel & Deploy', Icon: MinimalTechIcons.Vercel, hoverColor: 'group-hover:text-white' },
+              { name: 'Figma & UI', Icon: MinimalTechIcons.Figma, hoverColor: 'group-hover:text-pink-400' },
               { name: 'Telegram API', Icon: MinimalTechIcons.Telegram, hoverColor: 'group-hover:text-sky-400' },
-              { name: 'Figma', Icon: MinimalTechIcons.Figma, hoverColor: 'group-hover:text-pink-400' },
+              { name: 'Базы Данных', Icon: MinimalTechIcons.SQL, hoverColor: 'group-hover:text-blue-400' },
+              
+              // Бизнес стек (Новые навыки)
+              { name: 'Анализ Рынка', Icon: MinimalTechIcons.Analytics, hoverColor: 'group-hover:text-emerald-400' }, // Зеленый (Деньги/Рост)
+              { name: 'Таргет & Трафик', Icon: MinimalTechIcons.Target, hoverColor: 'group-hover:text-red-400' }, // Красный (Цель)
+              { name: 'Бизнес Модели', Icon: MinimalTechIcons.Plan, hoverColor: 'group-hover:text-amber-400' }, // Желтый (Идея)
+              
             ].map((skill, idx) => (
               <motion.div
                 key={idx}
@@ -253,13 +282,13 @@ const LandingPage: React.FC = () => {
               variants={fadeInVariant}
               className="lg:col-span-4 space-y-8"
             >
-              <h2 className="text-4xl font-bold">Course <br /><span className="text-purple-400">Program</span></h2>
+              <h2 className="text-4xl font-bold">Программа <br /><span className="text-purple-400">Обучения</span></h2>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { val: '8', label: 'Months' },
-                  { val: '4', label: 'Projects', color: 'text-lime-400' },
-                  { val: '105h', label: 'Theory' },
-                  { val: '350h', label: 'Practice' },
+                  { val: '12', label: 'Уроков' },
+                  { val: '1', label: 'Рабочий проект', color: 'text-lime-400' },
+                  { val: '22', label: 'часа практики' },
+                  { val: '10+', label: 'Материалов' },
                 ].map((stat, i) => (
                   <div key={i} className="bg-neutral-950 p-4 rounded-xl border border-neutral-800">
                     <div className={`text-3xl font-bold ${stat.color || 'text-white'} mb-1`}>{stat.val}</div>
@@ -294,8 +323,8 @@ const LandingPage: React.FC = () => {
             variants={fadeInVariant}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold mb-4">Invest in Your Future</h2>
-            <p className="text-gray-400">Choose the plan that suits your learning pace.</p>
+            <h2 className="text-4xl font-bold mb-4">Будь в числе первых.</h2>
+            <p className="text-gray-400">Это тестовый поток — поэтому цена всего $15. <br /> Минимум времени, максимум практической пользы.</p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -307,23 +336,23 @@ const LandingPage: React.FC = () => {
               className="bg-neutral-950 p-8 rounded-3xl border border-neutral-800 flex flex-col hover:border-gray-600 transition-colors"
             >
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-gray-400 mb-2">Self-Paced</h3>
+                <h3 className="text-xl font-bold text-gray-400 mb-2">Обычная цена</h3>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-white">$49</span>
-                  <span className="text-gray-600">/mo</span>
+                  <span className="text-4xl font-bold text-white">$149</span>
+                  <span className="text-gray-600">/мес</span>
                 </div>
               </div>
               <ul className="space-y-4 mb-8 flex-1">
-                {['Access to all video lectures', '4 Portfolio Projects', 'Community Access'].map((item, i) => (
+                {['Личный разбор твоей идеи', 'Формирование MVP', 'Разработка продукта с нуля','Поддержка до релиза','Анализ целевой аудитории','Сообщество основателей и разработчиков','Обновления программы и новые модули', 'Доступ к закрытому комьюнити'].map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-300 text-sm">
                     <CheckCircle size={16} className="text-gray-600 mt-0.5" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <button onClick={() => openModal('Basic Plan')} className="w-full py-4 rounded-xl border border-gray-700 font-bold hover:bg-white hover:text-black transition-all">
+              {/* <button onClick={() => openModal('Basic Plan')} className="w-full py-4 rounded-xl border border-gray-700 font-bold hover:bg-white hover:text-black transition-all">
                 Choose Basic
-              </button>
+              </button> */}
             </motion.div>
 
             {/* Pro Plan */}
@@ -335,17 +364,17 @@ const LandingPage: React.FC = () => {
               className="bg-neutral-950 p-8 rounded-3xl border-2 border-purple-600 relative flex flex-col transform md:-translate-y-4 shadow-[0_0_30px_rgba(147,51,234,0.15)]"
             >
               <div className="absolute top-0 right-0 bg-lime-400 text-black text-xs font-extrabold px-3 py-1 rounded-bl-xl rounded-tr-xl uppercase">
-                Best Value
+                Только 5 мест
               </div>
               <div className="mb-8">
-                <h3 className="text-xl font-bold text-purple-400 mb-2">Mentorship + Career</h3>
+                <h3 className="text-xl font-bold text-purple-400 mb-2">Ранний доступ</h3>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-white">$89</span>
-                  <span className="text-gray-600 line-through text-xl">$240</span>
+                  <span className="text-5xl font-bold text-white">$15</span>
+                  <span className="text-gray-600 line-through text-xl">$149</span>
                 </div>
               </div>
               <ul className="space-y-4 mb-8 flex-1">
-                {['Everything in Basic', 'Personal Mentor (Senior BA)', 'Job Guarantee'].map((item, i) => (
+                {['Личный разбор твоей идеи', 'Формирование MVP', 'Разработка продукта с нуля', 'Поддержка до релиза' , 'Анализ целевой аудитории'].map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-white text-sm font-medium">
                     <CheckCircle size={16} className="text-lime-400 mt-0.5" />
                     {item}
@@ -353,7 +382,7 @@ const LandingPage: React.FC = () => {
                 ))}
               </ul>
               <button onClick={() => openModal('Mentorship Plan')} className="w-full py-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all">
-                Start Pro Journey
+                Стать участником
               </button>
             </motion.div>
           </div>

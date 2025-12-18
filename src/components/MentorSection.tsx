@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Twitter, Linkedin, Github, ExternalLink } from 'lucide-react';
+import { Twitter, Linkedin, Github, ExternalLink, Instagram } from 'lucide-react';
 
 
 const MentorSection = () => {
@@ -22,15 +22,15 @@ const MentorSection = () => {
             <div className="aspect-square rounded-3xl overflow-hidden border border-neutral-800 relative group">
               {/* Замени src на реальное фото */}
               <img 
-                src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=800&q=75"
+                src="../../public/images/me1.jpg"
                 alt="Mentor" 
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-105"
               />
               
               {/* Плашка с опытом */}
               <div className="absolute bottom-6 left-6 bg-neutral-950/90 backdrop-blur border border-neutral-800 p-4 rounded-xl shadow-2xl">
-                <div className="text-3xl font-bold text-white mb-1">10+</div>
-                <div className="text-xs text-gray-500 uppercase tracking-widest">Years in Tech</div>
+                <div className="text-3xl font-bold text-white mb-1">3+</div>
+                <div className="text-xs text-gray-500 uppercase tracking-widest">Года в Финтехе </div>
               </div>
             </div>
             
@@ -48,23 +48,30 @@ const MentorSection = () => {
           >
             <div>
               <div className="inline-block px-3 py-1 bg-purple-500/10 text-purple-400 text-xs font-bold rounded-full mb-4">
-                MEET YOUR MENTOR
+                Ментор Solo Founders  
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Alex <span className="text-lime-400">Founder</span>
+                Муканбет уулу <span className="text-lime-400">Аман</span>
               </h2>
               <p className="text-xl text-gray-400 leading-relaxed">
-                Ex-Senior Developer в Google. Запустил 5 AI-стартапов в одиночку за последний год.
-                Два из них вышли на прибыль $10k/mo через 3 месяца.
+              AI-предприниматель и ментор по запуску MVP. <br />
+
+              5 запущенных AI-продуктов за год. <br />
+
+              2 прибыльных стартапа. <br />
+
+              Запуск без команды и инвесторов. <br />
+
+              Помогаю запускать MVP быстро, умно и без лишней теории.
               </p>
             </div>
 
             <div className="grid grid-cols-2 gap-6">
               {[
-                { label: 'Ex-Company', value: 'Google' },
-                { label: 'Products Launched', value: '12+' },
-                { label: 'Total Revenue', value: '$1.2M' },
-                { label: 'Students', value: '5k+' },
+                { label: 'Project Manager + Business Analyst', value: 'BakAi Bank' },
+                { label: 'Project Manager', value: 'Optima Bank' },
+                { label: 'CEO курсов программирования', value: 'Xcode.kg' },
+                { label: 'Прибыли с идей', value: '1 000 000 сом' },
               ].map((stat, i) => (
                 <div key={i} className="border-l-2 border-neutral-800 pl-4">
                   <div className="font-bold text-white text-xl">{stat.value}</div>
@@ -75,17 +82,16 @@ const MentorSection = () => {
 
             <div className="flex gap-4 pt-4">
                <button className="p-3 bg-neutral-800 rounded-full hover:bg-white hover:text-black transition-colors">
-                  <Twitter size={20} />
+                  <a href="https://www.instagram.com/amanaiitbaev/"><Instagram size={20} /></a>
                </button>
                <button className="p-3 bg-neutral-800 rounded-full hover:bg-[#0077b5] hover:text-white transition-colors">
-                  <Linkedin size={20} />
+                  <a href="https://www.linkedin.com/in/aman-mukanbet-uulu-74289823a?utm_source=share_via&utm_content=profile&utm_medium=member_ios"><Linkedin size={20} /></a>
                </button>
-               <button className="p-3 bg-neutral-800 rounded-full hover:bg-white hover:text-black transition-colors">
-                  <Github size={20} />
-               </button>
-               <button className="flex items-center gap-2 px-6 py-3 bg-lime-400 text-black font-bold rounded-full hover:bg-lime-300 transition-all">
-                  My Portfolio <ExternalLink size={16} />
-               </button>
+               <a href="https://t.me/codelabess">
+                <button className="flex items-center gap-2 px-6 py-3 bg-lime-400 text-black font-bold rounded-full hover:bg-lime-300 transition-all">
+                    Личное сообщение  <ExternalLink size={16} />
+                </button>
+               </a>
             </div>
           </motion.div>
         </div>

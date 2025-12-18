@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 // Импортируем Variants для типизации
 import { motion, type Variants } from 'framer-motion';
 import { Send, MessageSquare, User, Mail, ArrowUpRight } from 'lucide-react';
+// Импортируем тосты
+import toast, { Toaster } from 'react-hot-toast';
 
 // Явно указываем тип : Variants
 const textVariants: Variants = {
@@ -22,19 +24,82 @@ const containerVariants: Variants = {
 };
 
 const ContactForm = () => {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success'>('idle');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Состояние для данных формы
+  const [formData, setFormData] = useState({
+    name: '',
+    contact: '',
+    message: ''
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('sending');
-    setTimeout(() => {
-      setStatus('success');
-      setTimeout(() => setStatus('idle'), 3000);
-    }, 2000);
+    setIsSubmitting(true);
+
+    // Данные бота
+    const BOT_TOKEN = '8463441294:AAG5jqXX186h2oUkoj0YFTEJDIIButEt1j4';
+    const CHAT_ID = '5221925241';
+    
+    // Формируем красивое сообщение
+    const text = `
+🔥 <b>Новая вопрос с сайта!</b>
+
+👤 <b>Имя:</b> ${formData.name}
+<b>Контакт:</b> ${formData.contact}
+<b>Вопрос:</b>
+${formData.message}
+    `;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: text,
+          parse_mode: 'HTML', // Чтобы работала жирность шрифта
+        }),
+      });
+
+      if (response.ok) {
+        toast('Сообщение отправлено. Скоро отвечу!',
+          {
+            icon: '👏',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          }
+        );
+        // Очищаем форму
+        setFormData({ name: '', contact: '', message: '' });
+      } else {
+        throw new Error('Ошибка Telegram API');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Сообщение не отправлено. Попробуй наприсать напрямую в TG @codelabess")
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <section className="py-24 bg-neutral-950 relative overflow-hidden">
+      {/* Тостер для уведомлений */}
+      <Toaster position="top-center" />
+
       {/* Фоновые элементы */}
       <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-purple-600/20 blur-[120px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-lime-400/5 blur-[100px] rounded-full pointer-events-none"></div>
@@ -48,7 +113,7 @@ const ContactForm = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={containerVariants} // Применяем варианты контейнера здесь
+            variants={containerVariants}
             className="space-y-6"
           >
             <motion.div variants={textVariants} className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-purple-300 text-xs font-bold uppercase tracking-widest">
@@ -64,11 +129,11 @@ const ContactForm = () => {
             </motion.h2>
             
             <motion.p variants={textVariants} className="text-xl text-gray-400 max-w-md leading-relaxed">
-              Заполните форму, и ментор или карьерный консультант свяжется с вами в течение часа, чтобы помочь с выбором.
+              Заполните форму, и я свяжусь с вами в течение часа, чтобы помочь с выбором или ответить на вопросы.
             </motion.p>
 
             <motion.div variants={textVariants} className="pt-4">
-               <a href="#" className="inline-flex items-center gap-2 text-lime-400 font-bold hover:underline decoration-2 underline-offset-4 transition-all group">
+               <a href="https://t.me/codelabess" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-lime-400 font-bold hover:underline decoration-2 underline-offset-4 transition-all group">
                   Написать сразу в Telegram 
                   <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                </a>
@@ -92,7 +157,10 @@ const ContactForm = () => {
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" size={18} />
                     <input 
-                      type="text" 
+                      type="text"
+                      name="name" 
+                      value={formData.name}
+                      onChange={handleChange}
                       required
                       className="w-full bg-black/40 border border-neutral-800 rounded-xl pl-12 pr-4 py-4 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-white placeholder:text-gray-600"
                       placeholder="Ваше имя"
@@ -105,7 +173,10 @@ const ContactForm = () => {
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-purple-400 transition-colors" size={18} />
                     <input 
-                      type="text" 
+                      type="text"
+                      name="contact"
+                      value={formData.contact}
+                      onChange={handleChange}
                       required
                       className="w-full bg-black/40 border border-neutral-700 rounded-xl pl-12 pr-4 py-4 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-white placeholder:text-gray-600"
                       placeholder="@контакт"
@@ -120,6 +191,9 @@ const ContactForm = () => {
                   <MessageSquare className="absolute left-4 top-4 text-gray-500 group-focus-within:text-purple-400 transition-colors" size={18} />
                   <textarea 
                     rows={4}
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
                     required
                     className="w-full bg-black/40 border border-neutral-800 rounded-xl pl-12 pr-4 py-4 outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-white resize-none placeholder:text-gray-600"
                     placeholder="Опишите свой вопрос..."
@@ -129,22 +203,20 @@ const ContactForm = () => {
 
               <button 
                 type="submit"
-                disabled={status !== 'idle'}
+                disabled={isSubmitting}
                 className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] shadow-lg group ${
-                  status === 'success' 
-                  ? 'bg-lime-400 text-black' 
+                  isSubmitting
+                  ? 'bg-neutral-800 text-gray-400 cursor-not-allowed' 
                   : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-600/30'
                 }`}
               >
-                {status === 'idle' && (
+                {isSubmitting ? (
+                   <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                ) : (
                   <>
                     Отправить <Send size={20} className="-rotate-12 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"/>
                   </>
                 )}
-                {status === 'sending' && (
-                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                )}
-                {status === 'success' && <>Отправлено!</>}
               </button>
             </form>
           </motion.div>
