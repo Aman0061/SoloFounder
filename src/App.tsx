@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import RegisterPage from './pages/RegisterPage';
+import Login from './pages/Login';
 
 const App = () => {
   return (
@@ -10,6 +11,9 @@ const App = () => {
       
       {/* Страница регистрации */}
       <Route path="/register" element={<RegisterPage />} />
+
+      {/* Страница регистрации */}
+      <Route path="/Login" element={<Login />} />
     </Routes>
   );
 };
