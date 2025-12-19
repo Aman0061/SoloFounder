@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, X } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, X } from 'lucide-react';
 import { motion, type Variants } from 'framer-motion';
 // 1. Импортируем useNavigate и Link
 import { Link, useNavigate } from 'react-router-dom';
